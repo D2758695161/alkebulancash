@@ -1,13 +1,98 @@
-# Sample Hardhat Project
+# AlkebulanCash (AKB)
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+AlkebulanCash (AKB) is an ERC20-based digital asset designed to support sustainable development, cross-border value exchange, and community-led innovation across Africa.
 
-Try running some of the following tasks:
+The project implements a transparent, fee-based treasury model that enables long-term ecosystem funding while maintaining decentralisation principles.
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.js
-```
+---
+
+## 🌍 Vision & Purpose
+
+AlkebulanCash was created to explore how blockchain-based financial primitives can be used to:
+
+- Address cross-border transaction inefficiencies
+- Provide sustainable funding for community-driven projects
+- Enable transparent, on-chain treasury management
+- Lay the groundwork for decentralised governance
+
+The project is intentionally open-source to encourage learning, reuse, and public scrutiny.
+
+---
+
+## 🧱 Technical Overview
+
+The system consists of two core smart contracts:
+
+### 1. AlkebulanCash (AKB)
+- ERC20 token with a **fixed supply** of 25,000,000 AKB
+- Implements a **0.1% transfer fee** on non-whitelisted transfers
+- Fee is redirected to an on-chain treasury
+- Supports:
+  - Whitelisted fee exemptions
+  - Emergency pause functionality
+  - Role-based access control
+- Built using OpenZeppelin upgradeable contracts
+
+### 2. GasTreasury
+- Dedicated on-chain treasury contract
+- Receives protocol fees in AKB
+- Funds are withdrawable only by the treasury owner
+- Designed to be transferred to governance control in future phases
+
+---
+
+## 🔐 Fee & Treasury Model
+
+For each eligible AKB transfer:
+- 99.9% is delivered to the recipient
+- 0.1% is routed to the GasTreasury contract
+
+This model ensures:
+- Transparent, on-chain funding
+- Sustainable protocol development
+- Clear separation between user funds and treasury assets
+
+---
+
+## 🏛️ Governance Roadmap
+
+Governance is introduced in phases to reduce complexity and risk.
+
+Planned governance milestones:
+1. Deploy governance and timelock contracts
+2. Transfer administrative roles to governance
+3. Transfer GasTreasury ownership to governance
+4. Enable community-driven decision making
+
+This staged approach mirrors real-world protocol development best practices.
+
+---
+
+## 🛠️ Development Stack
+
+- Solidity ^0.8.x
+- Hardhat
+- OpenZeppelin Contracts (Upgradeable)
+- Ethereum Sepolia Testnet
+
+---
+
+## 📄 Status
+
+- Core contracts implemented
+- Local compilation successful
+- Testnet deployment in progress
+- Governance contracts planned (Phase 2)
+
+---
+
+## 🤝 Open Source & Contributions
+
+This repository is public to support transparency, peer review, and educational use.  
+Issues and pull requests are welcome.
+
+---
+
+## ⚠️ Disclaimer
+
+This project is experimental and deployed on testnet for learning and evaluation purposes.

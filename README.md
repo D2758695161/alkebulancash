@@ -42,7 +42,7 @@ The project is intentionally open-source to encourage learning, reuse, and publi
 The system consists of two core smart contracts:
 
 ### 1. AlkebulanCash (AKBC)
-- ERC20 token with a **fixed supply** of 25,000,000 AKB
+- ERC20 token with a **fixed supply** of 25,000,000 AKBC
 - Implements a **0.1% transfer fee** on non-whitelisted transfers
 - Fee is redirected to an on-chain treasury
 - Supports:

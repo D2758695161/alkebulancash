@@ -2,25 +2,27 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 /**
- * @title AlkebulanCash (AKB)
- * @dev ERC20 token with fixed supply, transfer fee, whitelist, and pause.
- * Upgradeable via OpenZeppelin Initializable pattern.
+ * @title AlkebulanCash (AKBC)
+ * @dev ERC20 token with fixed supply, transfer fee, whitelist, pause,
+ *      and on-chain governance support (ERC20Votes).
  */
 contract AlkebulanCash is
     Initializable,
     ERC20Upgradeable,
+    ERC20VotesUpgradeable,
     AccessControlUpgradeable,
     PausableUpgradeable
 {
     /// @notice Admin role for protocol management
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 
-    /// @notice Fixed maximum supply: 25,000,000 AKB
+    /// @notice Fixed maximum supply: 25,000,000 AKBC
     uint256 public constant MAX_SUPPLY = 25_000_000 * 10 ** 18;
 
     /// @notice Transfer fee: 0.1% (10 basis points)
@@ -32,11 +34,11 @@ contract AlkebulanCash is
     /// @notice Addresses exempt from fees
     mapping(address => bool) public isWhitelisted;
 
-    /// @notice Emitted when treasury address changes
-    event TreasuryUpdated(address indexed newTreasury);
-
     /// @notice Emitted when whitelist status changes
     event WhitelistUpdated(address indexed account, bool status);
+
+    /// @notice Emitted when treasury address changes
+    event TreasuryUpdated(address indexed newTreasury);
 
     /**
      * @notice Initializer (replaces constructor for upgradeable contracts)
@@ -45,7 +47,8 @@ contract AlkebulanCash is
     function initialize(address _gasTreasury) public initializer {
         require(_gasTreasury != address(0), "Invalid treasury");
 
-        __ERC20_init("AlkebulanCash", "AKB");
+        __ERC20_init("AlkebulanCash", "AKBC");
+        __ERC20Votes_init();
         __AccessControl_init();
         __Pausable_init();
 
@@ -65,7 +68,7 @@ contract AlkebulanCash is
     }
 
     /**
-     * @notice Update whitelist status for an address
+     * @notice Update whitelist status
      */
     function setWhitelist(address account, bool status)
         external
@@ -90,19 +93,31 @@ contract AlkebulanCash is
     }
 
     /**
-     * @dev Internal transfer hook with fee logic
+     * @dev Internal transfer hook with fee + governance safety
      */
     function _update(
         address from,
         address to,
         uint256 amount
-    ) internal override whenNotPaused {
-        // No fees on mint, burn, or whitelisted addresses
+    )
+        internal
+        override(ERC20Upgradeable, ERC20VotesUpgradeable)
+        whenNotPaused
+    {
+        // 🔓 Bypass fees for:
+        // - minting
+        // - burning
+        // - delegation
+        // - vote checkpointing
+        // - whitelisted addresses
         if (
             from == address(0) ||
             to == address(0) ||
+            from == to ||
+            amount == 0 ||
             isWhitelisted[from] ||
-            isWhitelisted[to]
+            isWhitelisted[to] ||
+            msg.sender == address(this)
         ) {
             super._update(from, to, amount);
             return;
@@ -113,5 +128,17 @@ contract AlkebulanCash is
 
         super._update(from, gasTreasury, fee);
         super._update(from, to, remainder);
+    }
+
+    /**
+     * @dev Required override for AccessControl + ERC165
+     */
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(AccessControlUpgradeable)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }

@@ -6,7 +6,7 @@ async function main() {
   console.log("Deploying Governor with account:", deployer.address);
 
   // AKBC token address (Sepolia)
-  const tokenAddress = "0x516027b80186f033E99B1dFaF325C8848A585196";
+  const tokenAddress = "0x4354Ad0d942e2D80f6ce25Cb00A2d2B8dCF6116a";
 
   const Token = await hre.ethers.getContractAt(
     "AlkebulanCash",

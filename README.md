@@ -1,5 +1,7 @@
 # AlkebulanCash (AKBC)
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19158117.svg)](https://doi.org/10.5281/zenodo.19158117)
+
 AlkebulanCash (AKBC) is an open-source decentralized governance and treasury system designed to enable transparent, community-driven funding using blockchain technology.
 
 The system integrates token governance, timelock-based execution, and validation layers to provide secure and accountable fund management for decentralized communities.

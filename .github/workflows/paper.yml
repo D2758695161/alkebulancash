@@ -1,0 +1,13 @@
+name: paper
+
+on: [push]
+
+jobs:
+  build-paper:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build paper
+        uses: openjournals/openjournals-docker@latest
+        with:
+          args: paper.md

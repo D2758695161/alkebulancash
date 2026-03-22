@@ -1,8 +1,8 @@
 # AlkebulanCash (AKBC)
 
-AlkebulanCash (AKBC) is a blockchain-based governance and funding infrastructure designed to enable transparent, community-driven financing for innovation and development across Africa.
+AlkebulanCash (AKBC) is an open-source decentralized governance and treasury system designed to enable transparent, community-driven funding using blockchain technology.
 
-The system combines token governance, on-chain treasury management, and secure grant distribution to create a decentralized financial coordination layer for funding real-world projects.
+The system integrates token governance, timelock-based execution, and validation layers to provide secure and accountable fund management for decentralized communities.
 
 ---
 
@@ -16,211 +16,118 @@ AlkebulanCash explores how decentralized governance can support:
 - Infrastructure financing  
 - Community innovation programs  
 
-The long-term goal is to build a **transparent decentralized funding infrastructure for Africa**.
+---
+
+## 🚀 Deployment (Sepolia Testnet)
+
+The system is deployed on Ethereum Sepolia.
+
+### AKBC Token
+
+- Address: 0x4354Ad0d942e2D80f6ce25Cb00A2d2B8dCF6116a  
+- Explorer: https://sepolia.etherscan.io/address/0x4354Ad0d942e2D80f6ce25Cb00A2d2B8dCF6116a  
 
 ---
 
-## 🔗 Testnet Deployment — Ethereum Sepolia
+## 🏛 Core Contracts
 
-The AlkebulanCash DAO infrastructure is currently deployed on the **Ethereum Sepolia Testnet**.
-
----
-
-## 🪙 AKBC Token
-
-**Contract Address**
-**Contract Address**
-
-
-0x4354Ad0d942e2D80f6ce25Cb00A2d2B8dCF6116a
-
-
-**Explorer**
-
-https://sepolia.etherscan.io/address/0x4354Ad0d942e2D80f6ce25Cb00A2d2B8dCF6116a
-
-### Features
-
-- ERC20 token  
-- Fixed supply: **25,000,000 AKBC**  
-- **0.1% protocol transfer fee**  
-- Whitelist support  
-- Emergency pause functionality  
-- On-chain governance voting  
+| Component         | Address |
+|------------------|--------|
+| Governor         | 0x6DE42b86C200Cf269f1cc291de52fD159FCFB1bD |
+| Timelock         | 0x4C8A70908DFcFc87D7A321C8fd7d80C40A6AC5a3 |
+| GasTreasury      | 0x3C80Cf3D6E14C744dcb5B249FdCa0b5164A788Fd |
+| Treasury         | 0xE79d484b7b83f1B79Bff75d76930D6ED5fcf72eC |
+| Grant Controller | 0x13691dEEC936D6d8b20954E1C44F6576e127977a |
 
 ---
 
-## 🏛️ Governance (Governor)
+## 🧱 Architecture
 
-**Contract Address**
-
-
-0x6DE42b86C200Cf269f1cc291de52fD159FCFB1bD
-
-
-The Governor contract enables:
-
-- Proposal creation  
-- Token-weighted voting  
-- Governance execution  
-
-All governance decisions are recorded **on-chain and publicly verifiable**.
-
----
-
-## ⏱ Timelock
-
-**Contract Address**
-
-
-0x4C8A70908DFcFc87D7A321C8fd7d80C40A6AC5a3
-
-
-The Timelock contract introduces a delay between proposal approval and execution.
-
-This provides:
-
-- Protection against malicious proposals  
-- Time for community review  
-- Additional governance security  
-
----
-
-## ⛽ GasTreasury
-
-**Contract Address**
-
-
-0x3C80Cf3D6E14C744dcb5B249FdCa0b5164A788Fd
-
-
-The GasTreasury collects protocol fees generated from AKBC transfers.
-
-These fees are later routed into the DAO treasury.
-
----
-
-## 🏦 DAO Treasury
-
-**Contract Address**
-
-
-0xE79d484b7b83f1B79Bff75d76930D6ED5fcf72eC
-
-
-The DAO Treasury securely stores funds controlled by governance.
-
-Funds can only be moved through **approved governance proposals**.
-
----
-
-## 🎓 Grant Controller
-
-**Contract Address**
-
-
-0x13691dEEC936D6d8b20954E1C44F6576e127977a
-
-
-The Grant Controller adds an additional protection layer for treasury disbursements.
-
-Funds cannot be sent to arbitrary wallets unless the wallet has first been **approved as a grant recipient**.
-
----
-
-## 🧱 System Architecture
-
-
-AKBC Token
-│
-▼
-Governor (DAO voting)
-│
-▼
-Timelock (execution delay)
-│
-▼
-Grant Controller (recipient approval)
-│
-▼
-DAO Treasury
-│
-▼
-GasTreasury (protocol fee collector)
-
-
-This architecture ensures that **no individual can move treasury funds without DAO approval**.
+    AKBC Token
+       ↓
+    Governor (Voting)
+       ↓
+    Timelock (Delay)
+       ↓
+    Grant Controller (Validation)
+       ↓
+    DAO Treasury
+       ↓
+    GasTreasury (Fees)
 
 ---
 
 ## 🔐 Security Model
 
-The AlkebulanCash governance system includes several protection layers.
-
-### Token Governance
-
-Token holders vote on proposals using token-weighted voting.
-
-### Timelock Delay
-
-Approved proposals cannot execute immediately.
-
-### Grant Recipient Approval
-
-Treasury funds can only be sent to pre-approved addresses.
-
-### Treasury Isolation
-
-Protocol fees are collected separately before entering the DAO treasury.
+- Token-weighted governance voting  
+- Timelock-enforced execution delay  
+- Grant recipient validation  
+- Treasury isolation  
 
 ---
 
-## 💰 Protocol Funding Model
+## 💰 Funding Model
 
-The protocol implements a **0.1% transfer fee**.
-
-For each eligible AKBC transfer:
-
-
-99.9% → recipient
-0.1% → GasTreasury
-
-
-These fees accumulate over time and can be allocated through governance proposals.
+- 0.1% protocol fee per transfer  
+- Fees routed to GasTreasury  
+- Allocated via governance proposals  
 
 ---
 
-## 🛠 Development Stack
+## 🛠 Installation & Setup
 
-- Solidity  
-- Hardhat  
-- OpenZeppelin Contracts  
-- Ethereum Sepolia Testnet  
-- OpenZeppelin Governor  
+Clone the repository:
+
+    git clone https://github.com/calebadekunle/AlkebulanCash.git
+    cd AlkebulanCash
+
+Install dependencies:
+
+    npm install
+
+Compile contracts:
+
+    npx hardhat compile
+
+Run tests:
+
+    npx hardhat test
+
+Deploy (example):
+
+    npx hardhat run scripts/deploy.js --network sepolia
 
 ---
 
-## 📄 Current Status
+## 🧪 Usage
 
-- AKBC token deployed  
-- DAO governance operational  
-- Treasury architecture implemented  
-- Grant controller deployed  
-- Governance proposals successfully tested  
+1. Acquire AKBC tokens (testnet)  
+2. Create governance proposal  
+3. Vote using token-weighted voting  
+4. Wait for timelock delay  
+5. Execute approved proposal  
 
 ---
 
-## 🤝 Open Source
+## 📊 Current Status
 
-This repository is public to encourage transparency, research, and educational use.
+- Token deployed  
+- Governance operational  
+- Treasury implemented  
+- Grant controller active  
+- Proposals tested  
 
-Contributions, issues, and pull requests are welcome.
+---
+
+## 🤝 Contributing
+
+Contributions are welcome via issues and pull requests.
 
 ---
 
 ## ⚠️ Disclaimer
 
-This project is experimental and currently deployed on the Ethereum Sepolia testnet for research and development purposes.
+This project is experimental and deployed on a testnet.
 
 ---
 

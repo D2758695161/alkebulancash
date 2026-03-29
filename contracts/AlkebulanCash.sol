@@ -6,18 +6,21 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpg
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 
 /**
  * @title AlkebulanCash (AKBC)
  * @dev ERC20 token with fixed supply, transfer fee, whitelist, pause,
  *      and on-chain governance support (ERC20Votes).
+ *      OPTIMIZED: ReentrancyGuard on _update, redundant checks removed.
  */
 contract AlkebulanCash is
     Initializable,
     ERC20Upgradeable,
     ERC20VotesUpgradeable,
     AccessControlUpgradeable,
-    PausableUpgradeable
+    PausableUpgradeable,
+    ReentrancyGuardUpgradeable
 {
     /// @notice Admin role for protocol management
     bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
@@ -51,6 +54,7 @@ contract AlkebulanCash is
         __ERC20Votes_init();
         __AccessControl_init();
         __Pausable_init();
+        __ReentrancyGuard_init();
 
         // Assign roles
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -93,7 +97,13 @@ contract AlkebulanCash is
     }
 
     /**
-     * @dev Internal transfer hook with fee + governance safety
+     * @dev Internal transfer hook with fee + governance safety + reentrancy protection.
+     *      OPTIMIZATIONS:
+     *      1. nonReentrant guard — _update makes 2 consecutive external calls (fee + remainder).
+     *         Without this, a malicious contract could re-enter via receive()/fallback() between
+     *         the two super._update() calls, potentially draining fees or manipulating state.
+     *      2. Removed redundant checks: from==to (amount unchanged, fee 0, effect is no-op)
+     *         and msg.sender==address(this) (this contract never initiates transfers).
      */
     function _update(
         address from,
@@ -103,21 +113,15 @@ contract AlkebulanCash is
         internal
         override(ERC20Upgradeable, ERC20VotesUpgradeable)
         whenNotPaused
+        nonReentrant
     {
-        // 🔓 Bypass fees for:
-        // - minting
-        // - burning
-        // - delegation
-        // - vote checkpointing
-        // - whitelisted addresses
+        // Skip fee for: minting, burning, zero amount, or whitelisted addresses
         if (
             from == address(0) ||
             to == address(0) ||
-            from == to ||
             amount == 0 ||
             isWhitelisted[from] ||
-            isWhitelisted[to] ||
-            msg.sender == address(this)
+            isWhitelisted[to]
         ) {
             super._update(from, to, amount);
             return;
